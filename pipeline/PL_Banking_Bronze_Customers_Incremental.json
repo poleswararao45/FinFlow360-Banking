@@ -1,0 +1,41 @@
+{
+	"name": "PL_Banking_Bronze_Customers_Incremental",
+	"properties": {
+		"activities": [
+			{
+				"name": "DBX_Bronze_Customers_Incremental",
+				"type": "DatabricksJob",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"jobId": "211261907263277",
+					"jobParameters": {
+						"run_id": {
+							"value": "@pipeline().parameters.p_run_id",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureDatabricks_Banking",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"p_run_id": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-11-17T05:57:09Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

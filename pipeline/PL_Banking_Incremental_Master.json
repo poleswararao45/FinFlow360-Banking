@@ -1,0 +1,151 @@
+{
+	"name": "PL_Banking_Incremental_Master",
+	"properties": {
+		"activities": [
+			{
+				"name": "EP_Customers_Incremental",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Banking_Customers_Incremental",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_Bronze_Customers_Incremental",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_Customers_Incremental",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Banking_Bronze_Customers_Incremental",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"p_run_id": {
+							"value": "@activity('EP_Customers_Incremental').output.pipelineRunId",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "EP_Silver_Customers_Incremental",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_Bronze_Customers_Incremental",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Banking_Silver_Customers_Incremental",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"p_run_id": {
+							"value": "@activity('EP_Customers_Incremental').output.pipelineRunId",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "EP_Gold_Transformation",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_Silver_Customers_Incremental",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Banking_Gold_Transformation",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "SP_Update_Customers_Watermark",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "EP_Gold_Transformation",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[control].[usp_update_watermark]",
+					"storedProcedureParameters": {
+						"new_watermark": {
+							"value": {
+								"value": "@activity('EP_Customers_Incremental').output.pipelineReturnValue.new_watermark",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"source_schema": {
+							"value": "",
+							"type": "String"
+						},
+						"source_table": {
+							"value": "",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQL_Banking",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2026-11-17T07:27:09Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

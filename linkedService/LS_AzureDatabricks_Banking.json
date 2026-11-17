@@ -1,0 +1,13 @@
+{
+	"name": "LS_AzureDatabricks_Banking",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDatabricks",
+		"typeProperties": {
+			"domain": "https://adb-7405614978270586.6.azuredatabricks.net",
+			"authentication": "MSI",
+			"workspaceResourceId": "/subscriptions/b8c89618-8754-4d6b-bef7-ab5e3ea186cf/resourceGroups/rg-banking-dev/providers/Microsoft.Databricks/workspaces/adb-banking-dev"
+		}
+	}
+}
