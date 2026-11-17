@@ -1,0 +1,15 @@
+{
+	"name": "adf-banking-datalake",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "8dd1dd70-b8b9-42fe-9910-ff322eb7c123",
+		"tenantId": "b0b636ea-152f-4b39-9b6c-8f9c9cb9cd22"
+	}
+}

@@ -1,0 +1,21 @@
+{
+	"name": "DS_JSON_PaymentEvents_Source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_Banking",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "payment_events.jsonl",
+				"folderPath": "incoming/payment_events",
+				"fileSystem": "landing"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

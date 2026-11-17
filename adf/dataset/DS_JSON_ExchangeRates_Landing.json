@@ -1,0 +1,21 @@
+{
+	"name": "DS_JSON_ExchangeRates_Landing",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_Banking",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "api/exchange_rates.json",
+				"folderPath": "api/exchange_rates",
+				"fileSystem": "landing"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

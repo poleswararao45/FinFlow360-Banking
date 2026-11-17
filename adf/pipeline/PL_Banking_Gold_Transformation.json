@@ -1,0 +1,30 @@
+{
+	"name": "PL_Banking_Gold_Transformation",
+	"properties": {
+		"activities": [
+			{
+				"name": "PL_Banking_Gold_Transformation",
+				"type": "DatabricksJob",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"jobId": "157009611800945"
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureDatabricks_Banking",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2026-11-15T14:29:40Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

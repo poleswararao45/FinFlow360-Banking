@@ -1,0 +1,103 @@
+{
+	"name": "PL_JSON_PaymentEvents_Ingestion",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_JSON_To_Parquet",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['event_id']"
+								},
+								"sink": {
+									"name": "event_id"
+								}
+							},
+							{
+								"source": {
+									"path": "$['transaction_id']"
+								},
+								"sink": {
+									"name": "transaction_id"
+								}
+							},
+							{
+								"source": {
+									"path": "$['event_type']"
+								},
+								"sink": {
+									"name": "event_type"
+								}
+							},
+							{
+								"source": {
+									"path": "$['channel']"
+								},
+								"sink": {
+									"name": "channel"
+								}
+							},
+							{
+								"source": {
+									"path": "$['event_time']"
+								},
+								"sink": {
+									"name": "event_time"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_JSON_PaymentEvents_Source",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_Parquet_PaymentEvents_Landing",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2026-11-14T09:36:10Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

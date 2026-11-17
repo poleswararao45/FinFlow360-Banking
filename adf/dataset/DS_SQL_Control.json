@@ -1,0 +1,17 @@
+{
+	"name": "DS_SQL_Control",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureSQL_Banking",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "control",
+			"table": "ingestion_config"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

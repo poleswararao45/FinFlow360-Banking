@@ -1,0 +1,92 @@
+{
+	"name": "PL_Banking_Silver_Transformation",
+	"properties": {
+		"activities": [
+			{
+				"name": "LKP_Silver_Metadata",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT 'customers' AS source_table, 'customer_id' AS primary_key\nUNION ALL\nSELECT 'branches', 'branch_id'\nUNION ALL\nSELECT 'accounts', 'account_id'\nUNION ALL\nSELECT 'transactions', 'transaction_id'\nUNION ALL\nSELECT 'payment_attempts', 'payment_id'\nUNION ALL\nSELECT 'fraud_alerts', 'alert_id';",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_Control",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "FE_Silver_Tables",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "LKP_Silver_Metadata",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('LKP_Silver_Metadata').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "DBX_Run_Silver_Job",
+							"type": "DatabricksJob",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"jobId": "705660305865885",
+								"jobParameters": {
+									"source_table": {
+										"value": "@item().source_table",
+										"type": "Expression"
+									},
+									"primary_key": {
+										"value": "@item().primary_key",
+										"type": "Expression"
+									},
+									"watermark_column": {
+										"value": "@string('')",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_AzureDatabricks_Banking",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2026-11-15T14:29:41Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
